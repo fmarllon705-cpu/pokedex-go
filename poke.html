@@ -1,0 +1,475 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Pokédex Nacional + Pokémon GO</title>
+<style>
+@import url('https://fonts.googleapis.com/css2?family=Orbitron:wght@500;700;900&family=Inter:wght@400;500;600;700;800&display=swap');
+:root{--bg:#090d18;--panel:#111827;--panel2:#182235;--red:#ef4444;--text:#f8fafc;--muted:#94a3b8;--border:rgba(255,255,255,.09)}
+*{box-sizing:border-box}body{margin:0;background:radial-gradient(ellipse at top left,#172554 0,transparent 35%),radial-gradient(ellipse at bottom right,#301447 0,transparent 35%),var(--bg);color:var(--text);font-family:Inter,Arial,sans-serif;min-height:100vh}
+button,input,select{font:inherit}button{cursor:pointer}
+header{display:flex;align-items:center;justify-content:space-between;gap:20px;padding:20px 5%;border-bottom:1px solid var(--border);background:rgba(9,13,24,.8);backdrop-filter:blur(15px);position:sticky;top:0;z-index:10}
+.brand{display:flex;align-items:center;gap:12px}.logo{width:48px;height:48px;border-radius:50%;background:linear-gradient(145deg,#ef4444 0 48%,#f8fafc 49% 52%,#1e293b 53%);border:4px solid white;box-shadow:0 0 20px #ef444466;position:relative}.logo:after{content:"";position:absolute;width:13px;height:13px;border-radius:50%;background:white;border:4px solid #1e293b;top:11px;left:11px}
+.brand h1{font:900 20px Orbitron,sans-serif;margin:0;letter-spacing:-1px}.brand span{color:#f87171}.brand small{color:var(--muted);display:block;margin-top:4px;font-size:10px;letter-spacing:2px}.header-actions{display:flex;gap:10px;flex-wrap:wrap}
+.btn{border:1px solid var(--border);background:var(--panel2);color:white;padding:11px 16px;border-radius:12px;font-weight:700;transition:.2s}.btn:hover{transform:translateY(-2px);border-color:#ef4444}.btn.primary{background:var(--red);border-color:var(--red)}
+main{max-width:1450px;padding:35px 5%;margin:auto}.hero{display:grid;grid-template-columns:1.4fr .6fr;gap:20px;align-items:center;margin-bottom:28px}.hero h2{font:900 clamp(27px,4vw,48px) Orbitron,sans-serif;line-height:1.2;margin:0 0 14px}.hero h2 span{color:#f87171}.hero p{color:var(--muted);line-height:1.7;max-width:600px}.hero-art{text-align:center;display:flex;justify-content:center;gap:10px;align-items:center}.hero-art img{width:min(100%,150px);filter:drop-shadow(0 0 35px #ef444455);animation:float 4s ease-in-out infinite}@keyframes float{0%,100%{transform:translateY(0) rotate(-4deg)}50%{transform:translateY(-12px) rotate(4deg)}}
+.stats{display:grid;grid-template-columns:repeat(3,1fr);gap:14px;margin-bottom:30px}.stat{background:linear-gradient(135deg,#182235,#111827);border:1px solid var(--border);padding:20px;border-radius:18px}.stat small{color:var(--muted);font-weight:600}.stat strong{display:block;font:900 28px Orbitron,sans-serif;margin-top:10px}
+.toolbar{background:rgba(17,24,39,.9);border:1px solid var(--border);padding:18px;border-radius:20px;margin-bottom:25px}.search-row{display:grid;grid-template-columns:1fr 200px 200px;gap:12px}.search-box{position:relative}.search-box span{position:absolute;left:15px;top:50%;transform:translateY(-50%)}input,select{width:100%;color:white;background:#0b1220;border:1px solid var(--border);border-radius:12px;padding:14px;outline:none}input:focus,select:focus{border-color:#ef4444;box-shadow:0 0 0 3px #ef444422}.search-box input{padding-left:43px}select option{background:#111827}.filter-label{color:var(--muted);font-size:11px;text-transform:uppercase;letter-spacing:1.5px;font-weight:800;margin:18px 0 12px}.type-filters{display:flex;flex-wrap:wrap;gap:8px}.type-btn{border:1px solid var(--border);background:#0b1220;color:#cbd5e1;padding:8px 13px;border-radius:30px;font-size:12px;font-weight:700;transition:.2s}.type-btn.active,.type-btn:hover{background:#ef4444;color:white;border-color:#ef4444}
+.section-head{display:flex;justify-content:space-between;align-items:center;gap:15px;margin:30px 0 20px}.section-head h3{font:700 20px Orbitron,sans-serif;margin:0}.section-head span{color:var(--muted);font-size:13px}.grid{display:grid;grid-template-columns:repeat(5,minmax(0,1fr));gap:17px}.card{--type-color:#334155;position:relative;border:1px solid var(--border);border-radius:20px;background:linear-gradient(150deg,color-mix(in srgb,var(--type-color) 18%,#111827),#111827 70%);padding:15px;overflow:hidden;cursor:pointer;transition:transform .25s,border-color .25s,box-shadow .25s;min-width:0}.card:before{content:"";position:absolute;width:130px;height:130px;background:var(--type-color);opacity:.12;border-radius:50%;top:-50px;right:-40px;filter:blur(4px)}.card:hover{transform:translateY(-7px);border-color:var(--type-color);box-shadow:0 12px 30px #0005}.card-top{display:flex;justify-content:space-between;align-items:center;position:relative;z-index:1}.dex-number{font:700 12px Orbitron,sans-serif;color:var(--muted)}.favorite{border:0;background:transparent;color:#64748b;font-size:22px;padding:0 3px;position:relative;z-index:2}.favorite.on{color:#f43f5e}.pokemon-image{height:150px;display:flex;align-items:center;justify-content:center;position:relative}.pokemon-image img{width:100%;height:145px;object-fit:contain;filter:drop-shadow(0 8px 8px #0004);transition:transform .3s}.card:hover .pokemon-image img{transform:scale(1.1)}.pokemon-name{text-align:center;text-transform:capitalize;font-weight:800;font-size:16px;margin:8px 0 12px;overflow-wrap:anywhere}.types{display:flex;justify-content:center;flex-wrap:wrap;gap:6px}.type{font-size:10px;font-weight:800;color:white;padding:6px 10px;border-radius:30px;text-transform:uppercase;letter-spacing:.5px;background:var(--type-color,#334155)}.card .type{background:#334155}
+.load-wrap{text-align:center;padding:35px 0}.load-wrap button{padding:15px 35px}.status{text-align:center;color:var(--muted);padding:40px;line-height:1.8}.spinner{width:35px;height:35px;border:4px solid #334155;border-top-color:#ef4444;border-radius:50%;animation:spin .7s linear infinite;margin:0 auto 15px}@keyframes spin{to{transform:rotate(360deg)}}
+.overlay{position:fixed;inset:0;background:#020617dd;backdrop-filter:blur(10px);z-index:100;display:none;align-items:center;justify-content:center;padding:15px}.overlay.show{display:flex}.modal{width:min(950px,100%);max-height:92vh;overflow-y:auto;border:1px solid var(--border);border-radius:25px;background:#111827;position:relative;animation:appear .25s ease}@keyframes appear{from{opacity:0;transform:scale(.95)}to{opacity:1;transform:scale(1)}}.close{position:sticky;float:right;right:18px;top:12px;z-index:8;border:1px solid var(--border);border-radius:50%;width:40px;height:40px;background:#0b1220;color:white;font-size:22px;margin:12px}
+.detail-header{clear:both;padding:20px 35px 35px;display:grid;grid-template-columns:1fr 1fr;align-items:center;gap:20px;background:radial-gradient(ellipse at 75% 50%,#334155,transparent 65%)}.detail-header img{width:100%;max-height:300px;object-fit:contain;filter:drop-shadow(0 10px 20px #0007)}.detail-number{color:#f87171;font:700 15px Orbitron,sans-serif}.detail-name{font:900 clamp(25px,4vw,42px) Orbitron,sans-serif;text-transform:capitalize;margin:15px 0;overflow-wrap:anywhere}.detail-info{padding:0 30px 30px}.detail-info h4{font:700 15px Orbitron,sans-serif;color:#f87171;margin:25px 0 15px}.info-grid{display:grid;grid-template-columns:repeat(2,1fr);gap:10px}.info-box{background:#0b1220;padding:15px;border-radius:12px;border:1px solid var(--border);min-width:0}.info-box small{color:var(--muted);display:block;margin-bottom:7px}.info-box strong{font-size:14px}.stat-row{display:grid;grid-template-columns:100px 35px 1fr;gap:10px;align-items:center;margin:12px 0;font-size:12px;text-transform:capitalize}.stat-bar{height:9px;border-radius:10px;background:#263247;overflow:hidden}.stat-fill{height:100%;background:linear-gradient(90deg,#ef4444,#f59e0b);border-radius:inherit;transition:width .6s}.detail-nav{display:flex;justify-content:space-between;gap:10px;margin-top:25px}footer{text-align:center;color:var(--muted);border-top:1px solid var(--border);padding:25px;font-size:12px;line-height:1.8}
+
+/* Estilos para os Cards de Counters Individuais no Modal */
+.counters-grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(130px, 1fr)); gap: 10px; margin-top: 10px; }
+.counter-item { background: #0b1220; border: 1px solid var(--border); border-radius: 12px; padding: 10px; text-align: center; display: flex; flex-direction: column; align-items: center; cursor: pointer; transition: .2s; }
+.counter-item:hover { border-color: #ef4444; transform: translateY(-2px); }
+.counter-item img { width: 64px; height: 64px; object-fit: contain; filter: drop-shadow(0 4px 6px #0005); }
+.counter-item span { font-size: 12px; font-weight: 700; text-transform: capitalize; margin-top: 6px; color: #f8fafc; }
+.counter-item small { font-size: 10px; color: var(--muted); margin-top: 2px; }
+
+/* Modos de Layout Forçados (PC / Mobile) */
+body.force-mobile .grid { grid-template-columns: repeat(2, minmax(0,1fr)) !important; gap: 10px !important; }
+body.force-mobile .hero-art { display: none !important; }
+body.force-mobile .hero { grid-template-columns: 1fr !important; }
+body.force-mobile .search-row { grid-template-columns: 1fr !important; }
+body.force-mobile .news-grid, body.force-mobile .colab-grid { grid-template-columns: 1fr !important; }
+
+body.force-pc .grid { grid-template-columns: repeat(5, minmax(0,1fr)) !important; }
+body.force-pc .news-grid { grid-template-columns: repeat(3, minmax(0,1fr)) !important; }
+body.force-pc .colab-grid { grid-template-columns: repeat(3, minmax(0,1fr)) !important; }
+
+@media(max-width:1100px){.grid{grid-template-columns:repeat(4,minmax(0,1fr))}}@media(max-width:800px){.grid{grid-template-columns:repeat(3,minmax(0,1fr))}.hero{grid-template-columns:1fr}.hero-art{display:none}.search-row{grid-template-columns:1fr 1fr}.search-box{grid-column:1/-1}header{padding:15px 4%}main{padding:25px 4%}.brand h1{font-size:16px}.header-actions .btn{padding:10px;font-size:12px}}@media(max-width:500px){.grid{grid-template-columns:repeat(2,minmax(0,1fr));gap:10px}.card{padding:10px;border-radius:15px}.pokemon-image{height:120px}.pokemon-image img{height:115px}.stats{gap:8px}.stat{padding:13px}.stat strong{font-size:20px}.search-row{grid-template-columns:1fr}.search-box{grid-column:auto}.detail-header{grid-template-columns:1fr;text-align:center;padding:20px}.detail-header img{max-height:220px;grid-row:1}.detail-info{padding:0 18px 20px}.info-grid{grid-template-columns:1fr 1fr}.stat-row{grid-template-columns:75px 25px 1fr;gap:6px}.section-head h3{font-size:15px}}
+
+.live-news{margin:0 0 30px;padding:24px;border:1px solid #ef444455;border-radius:22px;background:linear-gradient(125deg,rgba(127,29,29,.25),rgba(17,24,39,.96) 55%,rgba(30,41,59,.9));box-shadow:0 18px 45px #0003;position:relative;overflow:hidden}
+.live-news:after{content:"";position:absolute;width:230px;height:230px;border-radius:50%;background:#ef4444;opacity:.06;filter:blur(35px);right:-70px;top:-100px;pointer-events:none}
+.live-news-head{display:flex;justify-content:space-between;align-items:flex-start;gap:20px;margin-bottom:20px;position:relative;z-index:1}.live-kicker{font-size:10px;letter-spacing:2px;font-weight:900;color:#fca5a5}.live-dot{display:inline-block;width:8px;height:8px;border-radius:50%;background:#ef4444;box-shadow:0 0 12px #ef4444;margin-right:8px;animation:pulseLive 1.5s infinite}@keyframes pulseLive{50%{opacity:.35;box-shadow:0 0 3px #ef4444}}.live-news h2{font:900 clamp(22px,3vw,32px) Orbitron,sans-serif;margin:9px 0}.live-news h2 em{font-style:normal;color:#f87171}.live-news-head p{color:#94a3b8;font-size:13px;line-height:1.6;margin:0;max-width:680px}.updated-pill{white-space:nowrap;border:1px solid #475569;background:#0b1220;color:#cbd5e1;padding:9px 12px;border-radius:30px;font-size:11px;font-weight:800}.news-grid{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:13px;position:relative;z-index:1}
+
+/* Sprites do Campo Live Triplicados e Carrossel Otimizado com Setas */
+.news-card{background:#0b1220;border:1px solid #ffffff14;border-radius:18px;padding:18px;min-width:0;transition:.2s;display:flex;flex-direction:column;justify-content:space-between}
+.news-card:hover{transform:translateY(-3px);border-color:#ef444477}
+
+.news-top-info{margin-bottom:12px}
+.news-pokemon-header{display:flex;align-items:center;justify-content:space-between;margin-bottom:8px}
+.news-card .news-tag{display:inline-block;font-size:9px;letter-spacing:1px;text-transform:uppercase;font-weight:900;padding:6px 9px;border-radius:30px;background:#7f1d1d;color:#fecaca}
+.news-card .news-date{font-size:11px;color:#fca5a5;font-weight:800}
+
+/* Seção Central de Sprite com Carrossel e Setas */
+.news-sprite-box{display:flex;align-items:center;justify-content:center;gap:8px;background:rgba(255,255,255,.04);padding:12px;border-radius:14px;margin-bottom:14px;position:relative}
+
+.news-sprites-container{display:flex;align-items:center;overflow:hidden;width:192px;height:192px;scroll-behavior:smooth;scrollbar-width:none}
+.news-sprites-container::-webkit-scrollbar{display:none}
+
+.news-sprite-item{width:192px;height:192px;min-width:192px;object-fit:contain;cursor:pointer;transition:transform .2s;filter:drop-shadow(0 6px 10px #0007)}
+.news-sprite-item:hover{transform:scale(1.05)}
+
+.carousel-btn{background:rgba(11,18,32,0.8);border:1px solid var(--border);color:white;width:32px;height:32px;border-radius:50%;display:flex;align-items:center;justify-content:center;font-size:16px;font-weight:bold;cursor:pointer;transition:.2s;z-index:2;flex-shrink:0}
+.carousel-btn:hover{background:#ef4444;border-color:#ef4444}
+.carousel-btn.hidden{opacity:0;pointer-events:none}
+
+.news-card h3{font-size:15px;line-height:1.4;margin:0 0 8px}.news-card p{font-size:12px;line-height:1.6;color:#cbd5e1;margin:0 0 12px}.news-card a{color:#f87171;font-size:12px;font-weight:800;text-decoration:none}.news-card a:hover{text-decoration:underline}
+.news-foot{display:flex;flex-wrap:wrap;gap:12px 20px;align-items:center;margin-top:17px;padding-top:15px;border-top:1px solid #ffffff12;color:#94a3b8;font-size:11px;line-height:1.6;position:relative;z-index:1}.news-foot a{color:#fca5a5;font-weight:800;text-decoration:none}.news-foot a:hover{text-decoration:underline}
+@media(max-width:850px){.news-grid{grid-template-columns:repeat(2,minmax(0,1fr))}.live-news-head{flex-direction:column}.updated-pill{white-space:normal}}@media(max-width:550px){.news-grid{grid-template-columns:1fr}.live-news{padding:17px}}
+
+.colab-news{margin:0 0 30px;padding:24px;border:1px solid #3b82f655;border-radius:22px;background:linear-gradient(125deg,rgba(30,58,138,.3),rgba(17,24,39,.96) 55%,rgba(15,23,42,.9));box-shadow:0 18px 45px #0003;position:relative;overflow:hidden}
+.colab-news:after{content:"";position:absolute;width:230px;height:230px;border-radius:50%;background:#3b82f6;opacity:.06;filter:blur(35px);right:-70px;top:-100px;pointer-events:none}
+.colab-news-head{display:flex;justify-content:space-between;align-items:flex-start;gap:20px;margin-bottom:20px;position:relative;z-index:1}
+.colab-kicker{font-size:10px;letter-spacing:2px;font-weight:900;color:#93c5fd}
+.colab-news h2{font:900 clamp(22px,3vw,32px) Orbitron,sans-serif;margin:9px 0}
+.colab-news h2 em{font-style:normal;color:#60a5fa}
+.colab-grid{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:15px;position:relative;z-index:1}
+.colab-card{background:#0b1220;border:1px solid #ffffff14;border-radius:18px;overflow:hidden;display:flex;flex-direction:column;transition:.2s}
+.colab-card:hover{transform:translateY(-4px);border-color:#3b82f677}
+.colab-img-wrapper{width:100%;height:140px;position:relative;background:#1e293b;overflow:hidden}
+.colab-img-wrapper img.banner{width:100%;height:100%;object-fit:cover;opacity:.85;transition:.3s}
+.colab-card:hover .colab-img-wrapper img.banner{transform:scale(1.05);opacity:1}
+.colab-sprite{position:absolute;bottom:8px;right:8px;width:60px;height:60px;background:rgba(15,23,42,.85);border:2px solid #60a5fa;border-radius:50%;display:flex;align-items:center;justify-content:center;box-shadow:0 4px 10px #0008;z-index:2;cursor:pointer}
+.colab-sprite img{width:50px;height:50px;object-fit:contain}
+.colab-body{padding:16px;display:flex;flex-direction:column;flex:1}
+.colab-tag{display:inline-block;align-self:flex-start;font-size:9px;letter-spacing:1px;text-transform:uppercase;font-weight:900;padding:5px 9px;border-radius:30px;background:#1e3a8a;color:#bfdbfe;margin-bottom:8px}
+.colab-body h3{font-size:15px;line-height:1.4;margin:0 0 8px;color:#f8fafc}
+.colab-body p{font-size:12px;line-height:1.6;color:#cbd5e1;margin:0 0 12px;flex:1}
+.colab-pokemon-info{display:flex;align-items:center;gap:8px;background:rgba(255,255,255,.05);padding:6px 10px;border-radius:8px;font-size:11px;color:#93c5fd;font-weight:700}
+@media(max-width:850px){.colab-grid{grid-template-columns:repeat(2,minmax(0,1fr))}}
+@media(max-width:550px){.colab-grid{grid-template-columns:1fr}}
+
+</style>
+</head>
+<body>
+<header>
+  <div class="brand"><div class="logo"></div><div><h1>POKE<span>DEX</span></h1><small>NATIONAL DATABASE · 001—1025</small></div></div>
+  <div class="header-actions">
+    <button class="btn" id="layoutToggleBtn" title="Mudar layout Mobile/PC">📱 Layout: Auto</button>
+    <button class="btn" id="favoritesBtn">♥ Favoritos</button>
+    <button class="btn" id="regionalBtn">📍 Regionais</button>
+    <button class="btn" id="itemsBtn">🎒 Itens GO</button>
+    <button class="btn primary" id="allBtn">Todos</button>
+  </div>
+</header>
+<main>
+<section class="hero">
+  <div><h2>Explore o mundo<br>dos <span>Pokémon.</span></h2><p>Descubra informações, habilidades, tipos, efetividade de combate e dicas de captura no Pokémon GO para as 1.025 espécies.</p></div>
+  <div class="hero-art">
+    <img src="https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/other/official-artwork/25.png" alt="Pikachu">
+    <img src="https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/other/official-artwork/1.png" alt="Bulbasaur">
+  </div>
+</section>
+
+<section class="live-news" aria-label="Notícias e eventos atuais do Pokémon GO">
+  <div class="live-news-head"><div><span class="live-dot"></span><span class="live-kicker">GIRO GO · EVENTOS EM DESTAQUE</span><h2>Notícias <em>em tempo real</em></h2><p>Agenda acompanhada em fontes públicas. Confira sempre o calendário dentro do jogo para confirmar horários e disponibilidade local.</p></div><span class="updated-pill">Atualizado: 25 set. 2026</span></div>
+  <div class="news-grid" id="liveNewsGrid"></div>
+  <div class="news-foot"><span>Os eventos e chefes podem mudar por região, horário local e anúncios da Niantic.</span><a href="https://pokemongo.com/news" target="_blank" rel="noopener">Notícias oficiais ↗</a><a href="https://www.snacknap.com/" target="_blank" rel="noopener">Acompanhar eventos ativos ↗</a><a href="https://pogo.nerfplz.com/" target="_blank" rel="noopener">Calendário de setembro ↗</a></div>
+</section>
+
+<section class="colab-news" aria-label="Notícias Regionais e Colaborações">
+  <div class="colab-news-head">
+    <div>
+      <span class="colab-kicker">COLABS & EXCLUSIVOS REGIONAIS</span>
+      <h2>Eventos Regionais & <em>Colaborações</em></h2>
+      <p>Acompanhe novidades de selos do Japão (Stamp Rallies), pokémon temáticos locais, colaborações e ações pelo mundo.</p>
+    </div>
+    <span class="updated-pill" style="border-color:#3b82f6; color:#93c5fd">Especiais de Região</span>
+  </div>
+  <div class="colab-grid" id="colabNewsGrid"></div>
+</section>
+
+<section class="stats"><div class="stat"><small>Pokémon conhecidos</small><strong>1.025</strong></div><div class="stat"><small>Gerações</small><strong>9</strong></div><div class="stat"><small>Favoritos</small><strong id="favoriteCount">0</strong></div></section>
+<section class="toolbar"><div class="search-row"><div class="search-box"><span>🔎</span><input type="text" id="search" placeholder="Buscar por nome ou número..."></div><select id="generation"><option value="">Todas as gerações</option><option value="1">Geração I · Kanto</option><option value="2">Geração II · Johto</option><option value="3">Geração III · Hoenn</option><option value="4">Geração IV · Sinnoh</option><option value="5">Geração V · Unova</option><option value="6">Geração VI · Kalos</option><option value="7">Geração VII · Alola</option><option value="8">Geração VIII · Galar</option><option value="9">Geração IX · Paldea</option></select><select id="sort"><option value="id">Ordem da Pokédex</option><option value="name">Nome A–Z</option><option value="reverse">Número decrescente</option></select></div><div class="filter-label">Filtrar por tipo</div><div class="type-filters" id="typeFilters"></div></section>
+<div class="section-head"><h3 id="sectionTitle">Todos os Pokémon</h3><span id="resultCount">Carregando...</span></div>
+<div id="grid" class="grid"></div><div class="status" id="status"><div class="spinner"></div>Conectando à Pokédex...</div><div class="load-wrap"><button class="btn primary" id="loadMore" style="display:none">Carregar mais Pokémon ↓</button></div>
+</main>
+<footer>POKEDEX · NATIONAL DATABASE<br>Dados de espécies via PokéAPI · Sprites via PokeAPI/GitHub · Pokémon GO: disponibilidade sujeita a eventos e alterações da Niantic.</footer>
+<div class="overlay" id="overlay"><div class="modal" id="modal"><button class="close" id="closeModal">×</button><div id="modalContent"></div></div></div>
+<div class="overlay" id="itemsOverlay"><div class="modal"><button class="close" id="closeItems">×</button><div class="detail-info" style="padding-top:25px">
+<h2 style="font:900 26px Orbitron,sans-serif;color:#f87171">🎒 Guia de Itens · Pokémon GO</h2>
+<p style="color:#94a3b8;line-height:1.7">Itens, para que servem e formas comuns de conseguir. As fontes e quantidades podem mudar conforme eventos, nível e temporada.</p>
+<div class="search-row" style="grid-template-columns:1fr 220px"><input id="itemSearch" placeholder="Buscar item ou uso..."><select id="itemCategory"><option value="">Todas as categorias</option><option value="captura">Captura</option><option value="cura">Cura e reviver</option><option value="evolucao">Evolução</option><option value="aventura">Aventura e incubação</option><option value="batalha">Batalha e equipe</option><option value="moeda">Moedas e recursos</option><option value="outros">Outros</option></select></div>
+<div id="itemsList" class="info-grid" style="margin-top:18px"></div>
+<p style="color:#64748b;font-size:12px;line-height:1.7;margin-top:18px">Dica: confira a loja, tarefas de pesquisa, presentes, rotações de Poképaradas/Ginásios e notícias do jogo. Nem todo item fica disponível por todos os métodos o todo o tempo.</p>
+</div></div></div>
+<script>
+
+const liveEvents=[
+{tag:"BATALHAS MAX · LENDÁRIOS",date:"Até 27 de setembro de 2026",title:"Articuno, Zapdos e Moltres Dinamax",body:"As três aves lendárias de Kanto estão em Batalhas Max. Junte-se a outros Treinadores nos locais de energia e confira os Pontos de Energia próximos. A janela de evento termina em 27/09, conforme o calendário consultado.",link:"https://www.snacknap.com/",linkText:"Ver eventos ativos",pokemonIds:[144, 145, 146]},
+{tag:"REIDES DE 5 ESTRELAS",date:"23–29 de setembro de 2026",title:"Xurkitree, Buzzwole e Pheromosa",body:"Ultracriaturas estão na rotação de Reides de cinco estrelas. A distribuição é regional: Xurkitree na Ásia-Pacífico, Buzzwole nas Américas e Groenlândia e Pheromosa na Europa, Oriente Médio, África e Índia.",link:"https://pogo.nerfplz.com/",linkText:"Consultar calendário",pokemonIds:[796, 794, 795]},
+{tag:"MEGARREIDES",date:"Até 29 de setembro de 2026",title:"Mega Malamar",body:"Mega Malamar aparece em Megarreides nesta janela. Reúna uma equipe com golpes do tipo Inseto, Fada ou Lutador e consulte o lobby local para conferir os horários disponíveis.",link:"https://pogo.nerfplz.com/",linkText:"Ver agenda de reides",pokemonIds:[687]},
+{tag:"EVENTO DE PESQUISA",date:"Até 28 de setembro de 2026",title:"Escolha seu Caminho: Twilight Trails",body:"A pesquisa temporizada da temporada Twilight Trails fica disponível até 28/09. Abra a aba de eventos no jogo para conferir tarefas, escolhas e prazo exato da sua conta.",link:"https://pokemongo.com/news",linkText:"Abrir notícias oficiais",pokemonIds:[700]},
+{tag:"DOMINGO · BATALHAS MAX",date:"27 de setembro de 2026",title:"Último dia anunciado para as aves Dinamax",body:"A programação consultada indica o encerramento das Batalhas Max com Articuno, Zapdos e Moltres em 27/09. Confirme os horários nos Pontos de Energia do seu mapa antes de sair.",link:"https://www.snacknap.com/",linkText:"Conferir status atual",pokemonIds:[144, 145, 146]},
+{tag:"PRÓXIMA ROTAÇÃO MAX",date:"A partir de 28 de setembro de 2026",title:"Sobble Dinamax",body:"A agenda de setembro aponta Sobble como destaque da próxima segunda-feira Max, com rotação prevista a partir de 28/09. O calendário dentro do jogo é a confirmação final.",link:"https://pogo.nerfplz.com/",linkText:"Ver calendário",pokemonIds:[816]},
+{tag:"CAPTURA E PESQUISA",date:"26 de setembro de 2026",title:"Phantump Catch Mastery",body:"Evento de maestria de captura com Phantump previsto para 26/09, das 10h às 20h no horário local, conforme calendário público. Confira bônus e tarefas na página de eventos do jogo.",link:"https://pokemongo.com/news",linkText:"Consultar notícias oficiais",pokemonIds:[708]}
+];
+
+function renderLiveNews(){
+  const target=document.getElementById("liveNewsGrid");
+  if(!target)return;
+  target.innerHTML=liveEvents.map((e, index)=>{
+    const hasMultiple = e.pokemonIds.length > 1;
+    const containerId = `news-sprites-${index}`;
+    return `
+      <article class="news-card">
+        <div>
+          <div class="news-top-info">
+            <div class="news-pokemon-header">
+              <span class="news-tag">${e.tag}</span>
+              <span class="news-date">${e.date}</span>
+            </div>
+            <h3>${e.title}</h3>
+          </div>
+          
+          <div class="news-sprite-box">
+            <button class="carousel-btn ${hasMultiple ? '' : 'hidden'}" onclick="scrollCarousel('${containerId}', -1)">‹</button>
+            <div class="news-sprites-container" id="${containerId}">
+              ${e.pokemonIds.map(id=>`<img class="news-sprite-item" src="${SPRITE}/${id}.png" alt="Pokémon ${id}" onclick="openDetail(${id})" title="Ver detalhes, counters e sprites">`).join('')}
+            </div>
+            <button class="carousel-btn ${hasMultiple ? '' : 'hidden'}" onclick="scrollCarousel('${containerId}', 1)">›</button>
+          </div>
+
+          <p>${e.body}</p>
+        </div>
+        <a href="${e.link}" target="_blank" rel="noopener noreferrer">${e.linkText} ↗</a>
+      </article>
+    `;
+  }).join("");
+}
+
+function scrollCarousel(containerId, direction) {
+  const container = document.getElementById(containerId);
+  if (!container) return;
+  const scrollAmount = 204; // 192px sprite + 12px gap aproximadamente
+  container.scrollBy({ left: direction * scrollAmount, behavior: 'smooth' });
+}
+
+const colabEvents=[
+{tag:"JAPÃO · JR STAMP RALLY",title:"Rally de Carimbos Pokémon em Tóquio",body:"Estações de trem da JR East oferecem carimbos físicos exclusivos e medalhas virtuais no Pokémon GO para quem visitar as paradas selecionadas.",image:"https://images.unsplash.com/photo-1503899036084-c55cdd92da26?auto=format&fit=crop&w=600&q=80",pokemonId:25,pokemonName:"Pikachu (Chapéu de Capitão)"},
+{tag:"COLAB · POKÉMON LOCAL",title:"Embaixadores do Turismo no Japão",body:"Lapras foi nomeado embaixador de Miyagi! Encontros especiais nas praias locais e ônibus temáticos personalizados com selos da região.",image:"https://images.unsplash.com/photo-1542051841857-5f90071e7989?auto=format&fit=crop&w=600&q=80",pokemonId:131,pokemonName:"Lapras de Miyagi"},
+{tag:"EVENTO REGIONAL · BRASIL",title:"Encontro de Treinadores nas Américas",body:"Heracross ganha destaque com tarefas exclusivas de campo e bônus de Poeira Estelar para treinadores explorando parques das capitais.",image:"https://images.unsplash.com/photo-1516306580123-e6e52b1b7b5f?auto=format&fit=crop&w=600&q=80",pokemonId:214,pokemonName:"Heracross Regional"}
+];
+
+function renderColabNews(){
+  const target=document.getElementById("colabNewsGrid");
+  if(!target)return;
+  target.innerHTML=colabEvents.map(e=>`
+    <article class="colab-card">
+      <div class="colab-img-wrapper">
+        <img class="banner" src="${e.image}" alt="${e.title}">
+        <div class="colab-sprite" title="${e.pokemonName}" onclick="openDetail(${e.pokemonId})">
+          <img src="${SPRITE}/${e.pokemonId}.png" alt="${e.pokemonName}">
+        </div>
+      </div>
+      <div class="colab-body">
+        <span class="colab-tag">${e.tag}</span>
+        <h3>${e.title}</h3>
+        <p>${e.body}</p>
+        <div class="colab-pokemon-info">
+          <span>✨ Destaque: ${e.pokemonName}</span>
+        </div>
+      </div>
+    </article>
+  `).join("");
+}
+
+const API="https://pokeapi.co/api/v2";
+const SPRITE="https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon";
+const ART=SPRITE+"/other/official-artwork";
+const types={normal:"#A8A77A",fire:"#EE8130",water:"#6390F0",electric:"#F7D02C",grass:"#7AC74C",ice:"#96D9D6",fighting:"#C22E28",poison:"#A33EA1",ground:"#E2BF65",flying:"#A98FF3",psychic:"#F95587",bug:"#A6B91A",rock:"#B6A136",ghost:"#735797",dragon:"#6F35FC",dark:"#705746",steel:"#B7B7CE",fairy:"#D685AD"};
+const typeNames={normal:"Normal",fire:"Fogo",water:"Água",electric:"Elétrico",grass:"Planta",ice:"Gelo",fighting:"Lutador",poison:"Veneno",ground:"Terrestre",flying:"Voador",psychic:"Psíquico",bug:"Inseto",rock:"Pedra",ghost:"Fantasma",dragon:"Dragão",dark:"Sombrio",steel:"Aço",fairy:"Fada"};
+const generations=[[1,151],[152,251],[252,386],[387,493],[494,649],[650,721],[722,809],[810,905],[906,1025]];
+
+const goCapture={
+83:{status:"Regional",regions:["Leste da Ásia"],methods:["Aparição selvagem em áreas elegíveis","Eventos especiais"],note:"Farfetch'd de Kanto é tradicionalmente regional."},
+115:{status:"Regional",regions:["Austrália"],methods:["Aparição selvagem","Eventos e reides"],note:"Kangaskhan é associado à Austrália."},
+122:{status:"Regional",regions:["Europa"],methods:["Aparição selvagem ou eventos"],note:"Mr. Mime de Kanto é associado à Europa."},
+128:{status:"Regional",regions:["Américas"],methods:["Aparição selvagem","Eventos"],note:"Tauros de Kanto."},
+214:{status:"Regional",regions:["Américas Tropicais"],methods:["Aparição selvagem","Eventos"],note:"Heracross."},
+222:{status:"Regional",regions:["Regiões tropicais"],methods:["Aparição selvagem","Eventos"],note:"Corsola."},
+313:{status:"Regional",regions:["Europa, Ásia e Austrália"],methods:["Aparição selvagem","Eventos"],note:"Volbeat."},
+314:{status:"Regional",regions:["Américas e África"],methods:["Aparição selvagem","Eventos"],note:"Illumise."},
+324:{status:"Regional",regions:["Sul e Sudeste da Ásia"],methods:["Aparição selvagem","Eventos"],note:"Torkoal."},
+335:{status:"Regional",regions:["Europa, Ásia e Austrália"],methods:["Aparição selvagem","Eventos"],note:"Zangoose."},
+336:{status:"Regional",regions:["Américas e África"],methods:["Aparição selvagem","Eventos"],note:"Seviper."},
+337:{status:"Regional",regions:["Hemisfério Ocidental"],methods:["Aparição selvagem","Eventos"],note:"Lunatone."},
+338:{status:"Regional",regions:["Hemisfério Oriental"],methods:["Aparição selvagem","Eventos"],note:"Solrock."},
+357:{status:"Regional",regions:["África"],methods:["Aparição selvagem","Eventos"],note:"Tropius."},
+369:{status:"Regional",regions:["Oceania"],methods:["Aparição selvagem","Eventos"],note:"Relicanth."},
+417:{status:"Regional",regions:["Regiões setentrionais"],methods:["Aparição selvagem","Eventos"],note:"Pachirisu."},
+439:{status:"Regional por ovos",regions:["Europa"],methods:["Ovos de 7km / Eventos"],note:"Mime Jr."},
+441:{status:"Regional",regions:["Hemisfério Sul"],methods:["Aparição selvagem","Eventos"],note:"Chatot."},
+455:{status:"Regional",regions:["Sudeste dos EUA"],methods:["Aparição selvagem","Eventos"],note:"Carnivine."},
+480:{status:"Regional em reides",regions:["Ásia-Pacífico"],methods:["Reides de 5 estrelas"],note:"Uxie."},
+481:{status:"Regional em reides",regions:["Europa, Oriente Médio, África e Índia"],methods:["Reides de 5 estrelas"],note:"Mesprit."},
+482:{status:"Regional em reides",regions:["Américas e Groenlândia"],methods:["Reides de 5 estrelas"],note:"Azelf."},
+511:{status:"Regional",regions:["Ásia-Pacífico"],methods:["Aparição selvagem"],note:"Pansage."},
+513:{status:"Regional",regions:["Europa, Oriente Médio, África e Índia"],methods:["Aparição selvagem"],note:"Pansear."},
+515:{status:"Regional",regions:["Américas e Groenlândia"],methods:["Aparição selvagem"],note:"Panpour."},
+550:{status:"Regional por forma",regions:["Variável por região"],methods:["Aparição selvagem"],note:"Basculin."},
+556:{status:"Regional",regions:["Américas Quentes"],methods:["Aparição selvagem"],note:"Maractus."},
+561:{status:"Regional",regions:["Mediterrâneo e Norte da África"],methods:["Aparição selvagem"],note:"Sigilyph."},
+626:{status:"Regional",regions:["Nova York"],methods:["Aparição selvagem"],note:"Bouffalant."},
+631:{status:"Regional",regions:["Europa, Ásia e Austrália"],methods:["Aparição selvagem"],note:"Heatmor."},
+632:{status:"Regional",regions:["Américas e África"],methods:["Aparição selvagem","Eventos"],note:"Durant."}
+};
+const defaultCapture={status:"Disponibilidade variável",regions:["Sem região exclusiva confirmada"],methods:["Aparições selvagens, ovos e reides quando anunciados"],note:"Consulte as notícias oficiais do Pokémon GO."};
+
+const weaknesses={normal:["fighting"],fire:["water","ground","rock"],water:["electric","grass"],electric:["ground"],grass:["fire","ice","poison","flying","bug"],ice:["fire","fighting","rock","steel"],fighting:["flying","psychic","fairy"],poison:["ground","psychic"],ground:["water","grass","ice"],flying:["electric","ice","rock"],psychic:["bug","ghost","dark"],bug:["fire","flying","rock"],rock:["water","grass","fighting","ground","steel"],ghost:["ghost","dark"],dragon:["ice","dragon","fairy"],dark:["fighting","bug","fairy"],steel:["fire","fighting","ground"],fairy:["poison","steel"]};
+const resistances={normal:["rock","steel","ghost"],fire:["fire","water","rock","dragon"],water:["water","grass","dragon"],electric:["electric","grass","dragon","ground"],grass:["fire","grass","poison","flying","bug","dragon","steel"],ice:["fire","water","ice","steel"],fighting:["poison","flying","psychic","bug","fairy","ghost"],poison:["poison","ground","rock","ghost","steel"],ground:["grass","bug","flying"],flying:["electric","rock","steel"],psychic:["psychic","steel","dark"],bug:["fire","fighting","poison","flying","ghost","steel","fairy"],rock:["fighting","ground","steel"],ghost:["dark","normal"],dragon:["steel","fairy"],dark:["fighting","dark","fairy"],steel:["fire","water","electric","steel"],fairy:["fire","poison","steel"]};
+const GO_SUPER=1.6,GO_RESIST=.625,GO_DOUBLE_RESIST=.390625;
+let pokemon=[],filtered=[],displayed=0;const PAGE=40;let selectedType="",favoritesOnly=false,regionalOnly=false,favorites=JSON.parse(localStorage.getItem("pokedexFavorites")||"[]");let searchTimer;
+const $=id=>document.getElementById(id);
+function pad(n){return String(n).padStart(4,"0")}
+function getId(url){return Number(url.split("/").filter(Boolean).pop())}
+function generationOf(id){return generations.findIndex(g=>id>=g[0]&&id<=g[1])+1}
+function sprite(id){return `${ART}/${id}.png`}
+function fallbackImage(img,id){img.onerror=()=>{img.onerror=null;img.src=`${SPRITE}/${id}.png`}}
+function getCaptureInfo(id){return goCapture[id]||defaultCapture}
+
+const goItems=[
+{name:"Poké Bola",icon:"<img src='https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/items/poke-ball.png' style='width:32px;height:32px;vertical-align:middle;margin-right:6px;'>",category:"captura",use:"Capturar Pokémon comuns.",get:"Gire Poképaradas e Ginásios."},
+{name:"Grande Bola",icon:"<img src='https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/items/great-ball.png' style='width:32px;height:32px;vertical-align:middle;margin-right:6px;'>",category:"captura",use:"Aumenta a chance de captura.",get:"Gire Poképaradas e pesquisas."},
+{name:"Ultra Bola",icon:"<img src='https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/items/ultra-ball.png' style='width:32px;height:32px;vertical-align:middle;margin-right:6px;'>",category:"captura",use:"Alta taxa de sucesso na captura.",get:"Níveis mais altos e pesquisas."},
+{name:"Bola Premier",icon:"<img src='https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/items/premier-ball.png' style='width:32px;height:32px;vertical-align:middle;margin-right:6px;'>",category:"captura",use:"Usada em Reides e Shadows.",get:"Recompensas de Reide."},
+{name:"Bola Mestra",icon:"<img src='https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/items/master-ball.png' style='width:32px;height:32px;vertical-align:middle;margin-right:6px;'>",category:"captura",use:"Captura 100% garantida.",get:"Pesquisas Especiais raras."},
+{name:"Fruta Frambo",icon:"<img src='https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/items/razz-berry.png' style='width:32px;height:32px;vertical-align:middle;margin-right:6px;'>",category:"captura",use:"Facilita a captura.",get:"Poképaradas e presentes."},
+{name:"Fruta Frambo Dourada",icon:"<img src='https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/items/golden-razz-berry.png' style='width:32px;height:32px;vertical-align:middle;margin-right:6px;'>",category:"captura",use:"Grande bônus de captura.",get:"Reides e pesquisas."},
+{name:"Fruta Caxí",icon:"<img src='https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/items/nanab-berry.png' style='width:32px;height:32px;vertical-align:middle;margin-right:6px;'>",category:"captura",use:"Dobra os doces obtidos.",get:"Poképaradas e pesquisas."},
+{name:"Fruta Caxí Prateada",icon:"<img src='https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/items/silver-pinap-berry.png' style='width:32px;height:32px;vertical-align:middle;margin-right:6px;'>",category:"captura",use:"Dobra doces e facilita captura.",get:"Pesquisas Especiais."},
+{name:"Fruta Anaba",icon:"<img src='https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/items/nanab-berry.png' style='width:32px;height:32px;vertical-align:middle;margin-right:6px;'>",category:"captura",use:"Acalma o Pokémon.",get:"Poképaradas e presentes."},
+{name:"Poção",icon:"<img src='https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/items/potion.png' style='width:32px;height:32px;vertical-align:middle;margin-right:6px;'>",category:"cura",use:"Restaura 20 PS.",get:"Giros e presentes."},
+{name:"Super Poção",icon:"<img src='https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/items/super-potion.png' style='width:32px;height:32px;vertical-align:middle;margin-right:6px;'>",category:"cura",use:"Restaura 50 PS.",get:"Giros e presentes."},
+{name:"Hiper Poção",icon:"<img src='https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/items/hyper-potion.png' style='width:32px;height:32px;vertical-align:middle;margin-right:6px;'>",category:"cura",use:"Restaura 200 PS.",get:"Reides e giros."},
+{name:"Poção Máxima",icon:"<img src='https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/items/max-potion.png' style='width:32px;height:32px;vertical-align:middle;margin-right:6px;'>",category:"cura",use:"Restaura todo o PS.",get:"Reides e nível."},
+{name:"Reviver",icon:"<img src='https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/items/revive.png' style='width:32px;height:32px;vertical-align:middle;margin-right:6px;'>",category:"cura",use:"Revive com metade do PS.",get:"Reides e giros."},
+{name:"Reviver Máximo",icon:"<img src='https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/items/max-revive.png' style='width:32px;height:32px;vertical-align:middle;margin-right:6px;'>",category:"cura",use:"Revive com PS total.",get:"Reides e pesquisas."},
+{name:"Pedra do Sol",icon:"<img src='https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/items/sun-stone.png' style='width:32px;height:32px;vertical-align:middle;margin-right:6px;'>",category:"evolucao",use:"Evolui Gloom, Sunkern, etc.",get:"Giros de 7 dias."},
+{name:"Pedra de Sinnoh",icon:"<img src='https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/items/sinnoh-stone.png' style='width:32px;height:32px;vertical-align:middle;margin-right:6px;' onerror=\"this.src='https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/items/oval-stone.png'\">",category:"evolucao",use:"Evolui Pokémon de Sinnoh.",get:"Batalhas PvP e Rocket."},
+{name:"Pedra de Unova",icon:"<img src='https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/items/unova-stone.png' style='width:32px;height:32px;vertical-align:middle;margin-right:6px;' onerror=\"this.src='https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/items/dusk-stone.png'\">",category:"evolucao",use:"Evolui Pokémon de Unova.",get:"Lideres Rocket e pesquisas."},
+{name:"Revestimento Metálico",icon:"<img src='https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/items/metal-coat.png' style='width:32px;height:32px;vertical-align:middle;margin-right:6px;'>",category:"evolucao",use:"Evolui Onix, Scyther, etc.",get:"Giros semanais."},
+{name:"Pedra de Rei",icon:"<img src='https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/items/kings-rock.png' style='width:32px;height:32px;vertical-align:middle;margin-right:6px;'>",category:"evolucao",use:"Evolui Poliwhirl, Slowpoke.",get:"Giros semanais."},
+{name:"Escama de Dragão",icon:"<img src='https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/items/dragon-scale.png' style='width:32px;height:32px;vertical-align:middle;margin-right:6px;'>",category:"evolucao",use:"Evolui Seadra.",get:"Giros semanais."},
+{name:"Melhoria",icon:"<img src='https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/items/upgrade.png' style='width:32px;height:32px;vertical-align:middle;margin-right:6px;'>",category:"evolucao",use:"Evolui Porygon.",get:"Giros semanais."},
+{name:"Módulo Atrair",icon:"<img src='https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/items/relic-copper.png' style='width:32px;height:32px;vertical-align:middle;margin-right:6px;'>",category:"aventura",use:"Atrai Pokémon para a Poképarada.",get:"Loja e pesquisas."},
+{name:"Módulo Glacial",icon:"<img src='https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/items/ice-stone.png' style='width:32px;height:32px;vertical-align:middle;margin-right:6px;'>",category:"aventura",use:"Atrai tipo Gelo/Água.",get:"Loja."},
+{name:"Módulo Musgoso",icon:"<img src='https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/items/absorb-bulb.png' style='width:32px;height:32px;vertical-align:middle;margin-right:6px;'>",category:"aventura",use:"Atrai tipo Planta/Inseto.",get:"Loja."},
+{name:"Módulo Magnético",icon:"<img src='https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/items/magnet.png' style='width:32px;height:32px;vertical-align:middle;margin-right:6px;'>",category:"aventura",use:"Atrai tipo Elétrico/Aço.",get:"Loja."},
+{name:"Módulo Chuvoso",icon:"<img src='https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/items/mystic-water.png' style='width:32px;height:32px;vertical-align:middle;margin-right:6px;'>",category:"aventura",use:"Atrai tipo Água/Inseto/Elétrico.",get:"Loja."},
+{name:"Incubadora",icon:"<img src='https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/items/incubator.png' style='width:32px;height:32px;vertical-align:middle;margin-right:6px;'>",category:"aventura",use:"Incuba ovos (3 utilizações).",get:"Subidas de nível."},
+{name:"Incubadora Super",icon:"<img src='https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/items/super-incubator.png' style='width:32px;height:32px;vertical-align:middle;margin-right:6px;'>",category:"aventura",use:"Incuba mais rápido.",get:"Loja e caixas."},
+{name:"Poffin",icon:"<img src='https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/items/poffin.png' style='width:32px;height:32px;vertical-align:middle;margin-right:6px;' onerror=\"this.src='https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/items/rare-candy.png'\">",category:"aventura",use:"Deixa o companheiro com fome zero.",get:"Loja e pesquisas."},
+{name:"Incenso",icon:"<img src='https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/items/incense.png' style='width:32px;height:32px;vertical-align:middle;margin-right:6px;'>",category:"aventura",use:"Atrai Pokémon ao redor.",get:"Loja e pesquisas."},
+{name:"Ovo da Sorte",icon:"<img src='https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/items/lucky-egg.png' style='width:32px;height:32px;vertical-align:middle;margin-right:6px;'>",category:"outros",use:"Dobra XP por 30 minutos.",get:"Loja e níveis."},
+{name:"Pedaço de Estrela",icon:"<img src='https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/items/stardust.png' style='width:32px;height:32px;vertical-align:middle;margin-right:6px;' onerror=\"this.src='https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/items/star-piece.png'\">",category:"outros",use:"Dobra Poeira Estelar por 30m.",get:"Loja e caixas."},
+{name:"Passe de Reide",icon:"<img src='https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/items/raid-pass.png' style='width:32px;height:32px;vertical-align:middle;margin-right:6px;' onerror=\"this.src='https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/items/max-particle.png'\">",category:"batalha",use:"Acesso a Reides presenciais.",get:"Giro diário de Ginásio."},
+{name:"Passe à Distância",icon:"<img src='https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/items/remote-raid-pass.png' style='width:32px;height:32px;vertical-align:middle;margin-right:6px;' onerror=\"this.src='https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/items/raid-pass.png'\">",category:"batalha",use:"Acesso a Reides remotas.",get:"Loja."},
+{name:"Passe Premium",icon:"<img src='https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/items/premium-pass.png' style='width:32px;height:32px;vertical-align:middle;margin-right:6px;' onerror=\"this.src='https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/items/raid-pass.png'\">",category:"batalha",use:"Reides presenciais / PvP",get:"Loja e pesquisas."},
+{name:"Radar Rocket",icon:"<img src='https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/items/rocket-radar.png' style='width:32px;height:32px;vertical-align:middle;margin-right:6px;' onerror=\"this.src='https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/items/X-speed.png'\">",category:"batalha",use:"Encontra Líderes Rocket.",get:"Montando 6 componentes."},
+{name:"Super-radar Rocket",icon:"<img src='https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/items/super-rocket-radar.png' style='width:32px;height:32px;vertical-align:middle;margin-right:6px;' onerror=\"this.src='https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/items/X-special.png'\">",category:"batalha",use:"Encontra o Giovanni.",get:"Pesquisas Especiais."},
+{name:"Componente Misterioso",icon:"<img src='https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/items/mysterious-component.png' style='width:32px;height:32px;vertical-align:middle;margin-right:6px;' onerror=\"this.src='https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/items/pp-max.png'\">",category:"batalha",use:"Cria Radar Rocket.",get:"Derrotando Recrutas."},
+{name:"Doce",icon:"<img src='https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/items/rare-candy.png' style='width:32px;height:32px;vertical-align:middle;margin-right:6px;'>",category:"moeda",use:"Evolui e fortalece espécies.",get:"Capturando e caminhando."},
+{name:"Doce XL",icon:"<img src='https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/items/rare-candy-xl.png' style='width:32px;height:32px;vertical-align:middle;margin-right:6px;' onerror=\"this.src='https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/items/rare-candy.png'\">",category:"moeda",use:"Fortalece além do nível 40.",get:"Capturas de nível alto."},
+{name:"Poeira Estelar",icon:"<img src='https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/items/stardust.png' style='width:32px;height:32px;vertical-align:middle;margin-right:6px;'>",category:"moeda",use:"Fortalece e troca Pokémon.",get:"Capturas e batalhas."},
+{name:"Pokémoeda",icon:"<img src='https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/items/nugget.png' style='width:32px;height:32px;vertical-align:middle;margin-right:6px;'>",category:"moeda",use:"Moeda da loja do jogo.",get:"Defendendo Ginásios."},
+{name:"Megaenergia",icon:"<img src='https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/items/mega-bracelet.png' style='width:32px;height:32px;vertical-align:middle;margin-right:6px;' onerror=\"this.src='https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/items/max-particle.png'\">",category:"moeda",use:"Permite Megaevoluções.",get:"Mega Reides."},
+{name:"Energia Primal",icon:"<img src='https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/items/blue-orb.png' style='width:32px;height:32px;vertical-align:middle;margin-right:6px;' onerror=\"this.src='https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/items/red-orb.png'\">",category:"moeda",use:"Ativa Reversão Primal.",get:"Reides Primitivas."},
+{name:"MT Ataque Rápido",icon:"<img src='https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/items/fast-tm.png' style='width:32px;height:32px;vertical-align:middle;margin-right:6px;' onerror=\"this.src='https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/items/TM-normal.png'\">",category:"batalha",use:"Muda ataque rápido.",get:"Reides e PvP."},
+{name:"MT Ataque Carregado",icon:"<img src='https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/items/charged-tm.png' style='width:32px;height:32px;vertical-align:middle;margin-right:6px;' onerror=\"this.src='https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/items/TM-fighting.png'\">",category:"batalha",use:"Muda ataque carregado.",get:"Reides e PvP."},
+{name:"MT Elite Rápido",icon:"<img src='https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/items/elite-fast-tm.png' style='width:32px;height:32px;vertical-align:middle;margin-right:6px;' onerror=\"this.src='https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/items/TM-normal.png'\">",category:"batalha",use:"Escolhe ataque rápido legado.",get:"Comunidade / PvP."},
+{name:"MT Elite Carregado",icon:"<img src='https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/items/elite-charged-tm.png' style='width:32px;height:32px;vertical-align:middle;margin-right:6px;' onerror=\"this.src='https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/items/TM-fighting.png'\">",category:"batalha",use:"Escolhe ataque carregado legado.",get:"Comunidade / PvP."},
+{name:"Doce Raro",icon:"<img src='https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/items/rare-candy.png' style='width:32px;height:32px;vertical-align:middle;margin-right:6px;'>",category:"moeda",use:"Vira doce de qualquer Pokémon.",get:"Reides e PvP."},
+{name:"Doce Raro XL",icon:"<img src='https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/items/rare-candy-xl.png' style='width:32px;height:32px;vertical-align:middle;margin-right:6px;' onerror=\"this.src='https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/items/rare-candy.png'\">",category:"moeda",use:"Vira Doce XL de qualquer Pokémon.",get:"Reides de nível alto."}
+];
+
+function renderItems(){
+ const q=($("itemSearch").value||"").toLowerCase().trim(),cat=$("itemCategory").value,list=$("itemsList");list.innerHTML="";
+ const arr=goItems.filter(x=>(!cat||x.category===cat)&&(!q||(x.name+" "+x.use+" "+x.get).toLowerCase().includes(q)));
+ if(!arr.length){list.innerHTML='<div class="info-box" style="grid-column:1/-1">Nenhum item encontrado.</div>';return}
+ arr.forEach(item=>{const box=document.createElement("div");box.className="info-box";box.innerHTML=`<small style="color:#f87171;text-transform:uppercase;font-weight:800">${item.category}</small><strong style="display:block;font-size:16px;margin-bottom:6px">${item.icon}${item.name}</strong><p style="color:#cbd5e1;font-size:13px;line-height:1.65"><b>Para que serve:</b> ${item.use}</p><p style="color:#cbd5e1;font-size:13px;line-height:1.65;margin-bottom:0"><b>Como conseguir:</b> ${item.get}</p>`;list.appendChild(box)});
+}
+
+function saveFavorites(){localStorage.setItem("pokedexFavorites",JSON.stringify(favorites));$("favoriteCount").textContent=favorites.length}
+function toggleFavorite(id,event){if(event)event.stopPropagation();favorites=favorites.includes(id)?favorites.filter(x=>x!==id):[...favorites,id];saveFavorites();render()}
+function makeTypeBadge(type){const badge=document.createElement("span");badge.className="type";badge.style.background=types[type]||"#334155";badge.textContent=typeNames[type]||type;return badge}
+function buildTypeFilters(){const container=$("typeFilters");const all=document.createElement("button");all.className="type-btn active";all.textContent="Todos";all.dataset.type="";container.appendChild(all);Object.keys(types).forEach(type=>{const btn=document.createElement("button");btn.className="type-btn";btn.dataset.type=type;btn.textContent=typeNames[type];btn.style.borderColor=types[type]+"66";container.appendChild(btn)});container.addEventListener("click",e=>{const btn=e.target.closest(".type-btn");if(!btn)return;selectedType=btn.dataset.type;container.querySelectorAll(".type-btn").forEach(b=>b.classList.toggle("active",b===btn));applyFilters()})}
+async function loadPokemon(){try{const response=await fetch(`${API}/pokemon?limit=1025`);if(!response.ok)throw Error("Falha na API");const data=await response.json();pokemon=data.results.map((p,index)=>({id:index+1,name:p.name,url:p.url,types:[],generation:generationOf(index+1)}));await loadTypeIndex();$("status").style.display="none";applyFilters()}catch(err){$("status").innerHTML="Não foi possível conectar à PokéAPI.<br>Verifique a internet e recarregue a página.";console.error(err)}}
+async function loadTypeIndex(){await Promise.all(Object.keys(types).map(async type=>{try{const res=await fetch(`${API}/type/${type}`);if(!res.ok)return;const data=await res.json();data.pokemon.forEach(entry=>{const id=getId(entry.pokemon.url);const item=pokemon[id-1];if(item&&id<=1025&&!item.types.includes(type))item.types.push(type)})}catch(e){console.warn("Tipo não carregado:",type)}}))}
+function applyFilters(){const query=$("search").value.trim().toLowerCase(),gen=$("generation").value,sort=$("sort").value;filtered=pokemon.filter(p=>(p.name.includes(query)||String(p.id).includes(query))&&(!gen||p.generation===Number(gen))&&(!selectedType||p.types.includes(selectedType))&&(!favoritesOnly||favorites.includes(p.id))&&(!regionalOnly||!!goCapture[p.id]));if(sort==="name")filtered.sort((a,b)=>a.name.localeCompare(b.name));else if(sort==="reverse")filtered.sort((a,b)=>b.id-a.id);else filtered.sort((a,b)=>a.id-b.id);displayed=0;$("grid").innerHTML="";$("sectionTitle").textContent=favoritesOnly?"Seus Pokémon favoritos":regionalOnly?"Pokémon regionais":selectedType?`Tipo ${typeNames[selectedType]}`:gen?`Geração ${gen}`:"Todos os Pokémon";$("resultCount").textContent=`${filtered.length} encontrados`;if(!filtered.length){$("grid").innerHTML='<div class="status" style="grid-column:1/-1">Nenhum Pokémon encontrado.</div>';$("loadMore").style.display="none";return}render()}
+function render(){const grid=$("grid");const end=Math.min(displayed+PAGE,filtered.length);for(let i=displayed;i<end;i++){const p=filtered[i],card=document.createElement("article");card.className="card";card.style.setProperty("--type-color",types[p.types[0]]||"#334155");const top=document.createElement("div");top.className="card-top";const number=document.createElement("span");number.className="dex-number";number.textContent="#"+pad(p.id);const fav=document.createElement("button");fav.className="favorite"+(favorites.includes(p.id)?" on":"");fav.textContent=favorites.includes(p.id)?"♥":"♡";fav.title="Adicionar aos favoritos";fav.onclick=e=>toggleFavorite(p.id,e);top.append(number,fav);const imageBox=document.createElement("div");imageBox.className="pokemon-image";const img=document.createElement("img");img.src=sprite(p.id);img.alt=p.name;img.loading="lazy";fallbackImage(img,p.id);imageBox.appendChild(img);const name=document.createElement("div");name.className="pokemon-name";name.textContent=p.name.replace(/-/g," ");const badges=document.createElement("div");badges.className="types";p.types.forEach(t=>badges.appendChild(makeTypeBadge(t)));if(!p.types.length)badges.appendChild(makeTypeBadge("normal"));card.append(top,imageBox,name,badges);card.onclick=()=>openDetail(p.id);grid.appendChild(card)}displayed=end;$("loadMore").style.display=displayed<filtered.length?"inline-block":"none"}
+function getAttackMultiplier(attackType,defenderTypes){let multiplier=1;defenderTypes.forEach(defType=>{if(weaknesses[defType]?.includes(attackType))multiplier*=GO_SUPER;if(resistances[defType]?.includes(attackType))multiplier*=GO_RESIST});return multiplier}
+function getTypeEffectiveness(defenderTypes){const result={superEffective:[],resisted:[],doubleResisted:[],neutral:[]};Object.keys(types).forEach(attackType=>{const multiplier=getAttackMultiplier(attackType,defenderTypes),item={type:attackType,name:typeNames[attackType],multiplier};if(multiplier>1)result.superEffective.push(item);else if(multiplier<=GO_DOUBLE_RESIST+1e-5)result.doubleResisted.push(item);else if(multiplier<1)result.resisted.push(item);else result.neutral.push(item)});return result}
+
+// Exemplos recomendados de bons Pokémon de cada tipo para counters (IDs ilustrativos oficiais da PokéAPI)
+const typeCountersMap = {
+  fire: [{id: 6, name: "Charizard"}, {id: 157, name: "Typhlosion"}, {id: 257, name: "Blaziken"}],
+  water: [{id: 9, name: "Blastoise"}, {id: 160, name: "Feraligatr"}, {id: 130, name: "Gyarados"}],
+  electric: [{id: 25, name: "Pikachu"}, {id: 135, name: "Jolteon"}, {id: 145, name: "Zapdos"}],
+  grass: [{id: 3, name: "Venusaur"}, {id: 154, name: "Meganium"}, {id: 389, name: "Torterra"}],
+  ice: [{id: 131, name: "Lapras"}, {id: 473, name: "Mamoswine"}, {id: 144, name: "Articuno"}],
+  fighting: [{id: 68, name: "Machamp"}, {id: 257, name: "Blaziken"}, {id: 448, name: "Lucario"}],
+  poison: [{id: 94, name: "Gengar"}, {id: 65, name: "Alakazam"}, {id: 3, name: "Venusaur"}],
+  ground: [{id: 383, name: "Groudon"}, {id: 530, name: "Excadrill"}, {id: 473, name: "Mamoswine"}],
+  flying: [{id: 142, name: "Aerodactyl"}, {id: 146, name: "Moltres"}, {id: 384, name: "Rayquaza"}],
+  psychic: [{id: 150, name: "Mewtwo"}, {id: 65, name: "Alakazam"}, {id: 196, name: "Espeon"}],
+  bug: [{id: 123, name: "Scyther"}, {id: 212, name: "Scizor"}, {id: 637, name: "Volcarona"}],
+  rock: [{id: 248, name: "Tyranitar"}, {id: 376, name: "Metagross"}, {id: 142, name: "Aerodactyl"}],
+  ghost: [{id: 94, name: "Gengar"}, {id: 477, name: "Dusknoir"}, {id: 356, name: "Dusclops"}],
+  dragon: [{id: 149, name: "Dragonite"}, {id: 373, name: "Salamence"}, {id: 384, name: "Rayquaza"}],
+  dark: [{id: 248, name: "Tyranitar"}, {id: 197, name: "Umbreon"}, {id: 491, name: "Darkrai"}],
+  steel: [{id: 376, name: "Metagross"}, {id: 448, name: "Lucario"}, {id: 212, name: "Scizor"}],
+  fairy: [{id: 36, name: "Clefable"}, {id: 282, name: "Gardevoir"}, {id: 700, name: "Sylveon"}],
+  normal: [{id: 143, name: "Snorlax"}, {id: 39, name: "Jigglypuff"}, {id: 113, name: "Chansey"}]
+};
+
+function getCounterPokemons(defenderTypes) {
+  let counterList = [];
+  defenderTypes.forEach(defType => {
+    const weaknessesList = weaknesses[defType] || [];
+    weaknessesList.forEach(weakType => {
+      if (typeCountersMap[weakType]) {
+        counterList.push(...typeCountersMap[weakType]);
+      }
+    });
+  });
+  // Remover duplicatas pelo ID
+  const unique = Array.from(new Set(counterList.map(a => a.id)))
+    .map(id => counterList.find(a => a.id === id));
+  return unique.slice(0, 4); // Retorna até 4 ótimos counters
+}
+
+async function openDetail(id){const p=pokemon.find(x=>x.id===id);if(!p)return;$("overlay").classList.add("show");document.body.style.overflow="hidden";$("modalContent").innerHTML='<div class="status"><div class="spinner"></div>Carregando informações...</div>';try{const res=await fetch(`${API}/pokemon/${id}`);if(!res.ok)throw Error("Erro ao buscar dados");const data=await res.json();const name=data.name.replace(/-/g," "),artwork=data.sprites.other["official-artwork"].front_default||sprite(id);
+const defenderTypes=data.types.map(t=>t.type.name),eff=getTypeEffectiveness(defenderTypes);
+const counterPokemons = getCounterPokemons(defenderTypes);
+
+let countersHTML = "";
+if (counterPokemons.length > 0) {
+  countersHTML = `<div class="counters-grid">` + counterPokemons.map(c => `
+    <div class="counter-item" onclick="openDetail(${c.id})">
+      <img src="${SPRITE}/${c.id}.png" alt="${c.name}" onerror="this.src='${SPRITE}/25.png'">
+      <span>${c.name}</span>
+      <small>#${pad(c.id)}</small>
+    </div>
+  `).join("") + `</div>`;
+} else {
+  countersHTML = `<p style="color:#94a3b8; font-size:13px; margin:0">Nenhum counter específico listado para este perfil.</p>`;
+}
+
+$("modalContent").innerHTML=`
+<div class="detail-header"><div><div class="detail-number">POKÉMON #${pad(id)} · GERAÇÃO ${generationOf(id)}</div><div class="detail-name">${name}</div><div class="types" id="detailTypes"></div><p style="color:#94a3b8;line-height:1.8">Dados da espécie e análise complementar para Pokémon GO.</p><button class="btn primary" id="detailFav">${favorites.includes(id)?"♥ Remover dos favoritos":"♡ Adicionar aos favoritos"}</button></div><img src="${artwork}" alt="${name}" onerror="this.src='${SPRITE}/${id}.png'"></div>
+<div class="detail-info">
+<h4>Melhores Counters (Sprite e Nome)</h4>
+<div class="info-box" style="border-color:#ef444455; background:rgba(239,68,68,0.03)">
+  <p style="color:#f8fafc; font-size:13px; line-height:1.6; margin-bottom:10px">Recomendações baseadas nas fraquezas de tipo para combate:</p>
+  ${countersHTML}
+</div>
+<h4>Informações básicas</h4><div class="info-grid"><div class="info-box"><small>Altura</small><strong>${(data.height/10).toFixed(1)} m</strong></div><div class="info-box"><small>Peso</small><strong>${(data.weight/10).toFixed(1)} kg</strong></div><div class="info-box"><small>Experiência base</small><strong>${data.base_experience??"—"}</strong></div><div class="info-box"><small>Espécie</small><strong>${data.species.name.replace(/-/g," ")}</strong></div></div>
+<h4>Habilidades</h4><div class="info-grid" id="abilities"></div>
+<h4>Estatísticas base</h4><div id="stats"></div>
+<h4>Efetividade de tipos · Pokémon GO</h4><div class="info-grid" id="combatSummary"></div>
+<h4>Tipos de golpes super-efetivos</h4><div id="weaknessList" class="types" style="justify-content:flex-start"></div>
+<h4>Tipos de golpes com resistência</h4><div id="resistanceList" class="types" style="justify-content:flex-start"></div>
+<h4>Resumo de combate</h4><div id="combatAdvice" class="info-box"></div>
+<h4>Guia de captura</h4><div class="info-grid" id="captureSummary"></div><div class="info-box" style="margin-top:12px"><small>Onde encontrar</small><div id="captureRegions" style="font-size:14px;line-height:1.8"></div></div><div class="info-box" style="margin-top:12px"><small>Métodos de captura</small><div id="captureMethods" style="font-size:14px;line-height:1.8"></div></div><div class="info-box" style="margin-top:12px"><small>O que esperar</small><p id="captureNote" style="font-size:13px;line-height:1.8;color:#cbd5e1;margin:0"></p></div>
+<div class="detail-nav"><button class="btn" id="prevPokemon">← Anterior</button><button class="btn" id="nextPokemon">Próximo →</button></div></div>`;
+data.types.forEach(t=>$("detailTypes").appendChild(makeTypeBadge(t.type.name)));data.abilities.forEach(a=>{const box=document.createElement("div");box.className="info-box";box.innerHTML=`<small>Habilidade${a.is_hidden?" oculta":""}</small><strong style="text-transform:capitalize">${a.ability.name.replace(/-/g," ")}</strong>`;$("abilities").appendChild(box)});
+const statNames={hp:"HP",attack:"Ataque",defense:"Defesa","special-attack":"Atq. especial","special-defense":"Def. especial",speed:"Velocidade"};data.stats.forEach(s=>{const row=document.createElement("div");row.className="stat-row";const value=s.base_stat,width=Math.min(100,value/255*100);row.innerHTML=`<span>${statNames[s.stat.name]||s.stat.name}</span><strong>${value}</strong><div class="stat-bar"><div class="stat-fill" style="width:${width}%"></div></div>`;$("stats").appendChild(row)});
+const summary=$("combatSummary");summary.innerHTML="";[{title:"Fraquezas",value:eff.superEffective.length,description:"Dano aumentado",color:"#ef4444"},{title:"Resistências",value:eff.resisted.length+eff.doubleResisted.length,description:"Dano reduzido",color:"#22c55e"}].forEach(item=>{const box=document.createElement("div");box.className="info-box";box.innerHTML=`<small>${item.title}</small><strong style="color:${item.color};font-size:24px">${item.value}</strong><small style="margin-top:5px">${item.description}</small>`;summary.appendChild(box)});
+const weak=$("weaknessList");weak.innerHTML="";eff.superEffective.forEach(item=>{const b=makeTypeBadge(item.type);b.title=`${item.name}: ${item.multiplier.toFixed(2)}x`;weak.appendChild(b)});if(!eff.superEffective.length)weak.textContent="Nenhuma fraqueza destacada.";
+const resist=$("resistanceList"),allRes=[...eff.resisted,...eff.doubleResisted];resist.innerHTML="";allRes.forEach(item=>{const b=makeTypeBadge(item.type);b.title=`${item.name}: ${item.multiplier.toFixed(3)}x`;resist.appendChild(b)});if(!allRes.length)resist.textContent="Nenhuma resistência.";
+$("combatAdvice").innerHTML=`<p style="line-height:1.8;margin:0"><strong style="color:#f87171">Fraquezas:</strong><br>${eff.superEffective.map(x=>`${x.name} (${x.multiplier.toFixed(2)}×)`).join(", ")||"Nenhuma."}</p><p style="line-height:1.8;margin:15px 0 0"><strong style="color:#4ade80">Resistências:</strong><br>${allRes.map(x=>`${x.name} (${x.multiplier.toFixed(3)}×)`).join(", ")||"Nenhuma."}</p>`;
+const cap=getCaptureInfo(id);$("captureSummary").innerHTML="";const statusBox=document.createElement("div");statusBox.className="info-box";statusBox.innerHTML=`<small>Status</small><strong style="color:#fbbf24">${cap.status}</strong>`;$("captureSummary").appendChild(statusBox);const regionBox=document.createElement("div");regionBox.className="info-box";regionBox.innerHTML=`<small>Região</small><strong style="font-size:13px;line-height:1.8">${cap.regions.join("<br>")}</strong>`;$("captureSummary").appendChild(regionBox);$("captureRegions").textContent=cap.regions.join(" · ");$("captureMethods").innerHTML=cap.methods.map(m=>"• "+m).join("<br>");$("captureNote").textContent=cap.note;
+$("detailFav").onclick=()=>{favorites=favorites.includes(id)?favorites.filter(x=>x!==id):[...favorites,id];saveFavorites();$("detailFav").textContent=favorites.includes(id)?"♥ Remover dos favoritos":"♡ Adicionar aos favoritos";render()};$("prevPokemon").onclick=()=>openDetail(Math.max(1,id-1));$("nextPokemon").onclick=()=>openDetail(Math.min(1025,id+1));
+}catch(err){$("modalContent").innerHTML='<div class="status">Erro ao carregar detalhes. Tente novamente.</div>';console.error(err)}}
+
+function closeModal(){$("overlay").classList.remove("show");document.body.style.overflow=""}
+$("closeModal").onclick=closeModal;$("overlay").addEventListener("click",e=>{if(e.target===$("overlay"))closeModal()});document.addEventListener("keydown",e=>{if(e.key==="Escape")closeModal()});$("search").addEventListener("input",()=>{clearTimeout(searchTimer);searchTimer=setTimeout(applyFilters,250)});$("generation").addEventListener("change",applyFilters);$("sort").addEventListener("change",applyFilters);$("loadMore").onclick=render;
+$("favoritesBtn").onclick=()=>{favoritesOnly=true;regionalOnly=false;$("favoritesBtn").classList.add("primary");$("regionalBtn").classList.remove("primary");$("allBtn").classList.remove("primary");applyFilters()};
+$("regionalBtn").onclick=()=>{regionalOnly=true;favoritesOnly=false;$("regionalBtn").classList.add("primary");$("favoritesBtn").classList.remove("primary");$("allBtn").classList.remove("primary");applyFilters()};
+$("allBtn").onclick=()=>{favoritesOnly=false;regionalOnly=false;$("allBtn").classList.add("primary");$("favoritesBtn").classList.remove("primary");$("regionalBtn").classList.remove("primary");applyFilters()};
+$("itemsBtn").onclick=()=>{$("itemsOverlay").classList.add("show");document.body.style.overflow="hidden";renderItems()};
+$("closeItems").onclick=()=>{$("itemsOverlay").classList.remove("show");document.body.style.overflow=""};
+$("itemsOverlay").addEventListener("click",e=>{if(e.target===$("itemsOverlay")){$("itemsOverlay").classList.remove("show");document.body.style.overflow=""}});
+$("itemSearch").addEventListener("input",renderItems);$("itemCategory").addEventListener("change",renderItems);
+
+// Script para alternar o layout manualmente (Auto / Mobile / PC)
+let layoutMode = 0; // 0: Auto, 1: Mobile, 2: PC
+$("layoutToggleBtn").onclick = () => {
+  layoutMode = (layoutMode + 1) % 3;
+  const btn = $("layoutToggleBtn");
+  if(layoutMode === 0) {
+    document.body.classList.remove("force-mobile", "force-pc");
+    btn.textContent = "📱 Layout: Auto";
+  } else if(layoutMode === 1) {
+    document.body.classList.remove("force-pc");
+    document.body.classList.add("force-mobile");
+    btn.textContent = "📱 Layout: Mobile";
+  } else {
+    document.body.classList.remove("force-mobile");
+    document.body.classList.add("force-pc");
+    btn.textContent = "💻 Layout: PC";
+  }
+};
+
+renderLiveNews();
+renderColabNews();
+saveFavorites();buildTypeFilters();loadPokemon();
+</script>
+</body>
+</html>
